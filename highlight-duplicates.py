@@ -1,12 +1,20 @@
 import difflib
 import sys
+import re
 
 def highlight_duplicates(file_path):
     with open(file_path, 'r') as file:
-        lines = file.readlines()
+        text = file.read()
+
+    # Split text into lines
+    lines = re.split(r'[.?]', text)
 
     # Remove leading/trailing whitespace and empty lines
     lines = [line.strip() for line in lines if line.strip()]
+    # Remove lines that starts with '\' or '%' (TeX command)
+    lines = [line for line in lines if not line.startswith(('\\', '%'))]
+    # Remove lines that are too short
+    lines = [line for line in lines if len(line) > 10]
 
     # Find duplicates using difflib's SequenceMatcher
     duplicates = []
